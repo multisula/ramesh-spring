@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.javaguides.springboot.dto.UserDto;
 import net.javaguides.springboot.entity.User;
+import net.javaguides.springboot.mapper.AutoUserMapper;
 import net.javaguides.springboot.mapper.UserMapper;
 import net.javaguides.springboot.repository.UserRepository;
 import net.javaguides.springboot.service.UserService;
@@ -25,13 +26,21 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDto createUser(UserDto userDto) {
+    // 1. Convert UserDto to User Entity
+    // Custom UserMapper class
 //    User user = UserMapper.mapToUser(userDto);
-    User user = modelMapper.map(userDto, User.class);
+    // ModelMapper Library
+//    User user = modelMapper.map(userDto, User.class);
+    // MapStruct Library
+    User user = AutoUserMapper.MAPPER.mapToUser(userDto);
 
+    // 2. create user
     User savedUser = userRepository.save(user);
 
+    // 3. Convert User Entity to UserDto
 //    userDto = UserMapper.mapToUserDto(savedUser);
-    userDto = modelMapper.map(savedUser, UserDto.class);
+//    userDto = modelMapper.map(savedUser, UserDto.class);
+    userDto = AutoUserMapper.MAPPER.mapToUserDto(savedUser);
 
     return userDto;
   }
@@ -40,13 +49,15 @@ public class UserServiceImpl implements UserService {
   public UserDto getUserById(Long userId) {
     Optional<User> optionalUser = userRepository.findById(userId);
 //    return UserMapper.mapToUserDto(optionalUser.get());
-    return modelMapper.map(optionalUser.get(), UserDto.class);
+//    return modelMapper.map(optionalUser.get(), UserDto.class);
+    return AutoUserMapper.MAPPER.mapToUserDto(optionalUser.get());
   }
 
   @Override
   public List<UserDto> getAllUsers() {
 //    return userRepository.findAll().stream().map(UserMapper::mapToUserDto).collect(Collectors.toList());
-    return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+//    return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+    return userRepository.findAll().stream().map(user -> AutoUserMapper.MAPPER.mapToUserDto(user)).collect(Collectors.toList());
   }
 
 
@@ -58,7 +69,8 @@ public class UserServiceImpl implements UserService {
     existingUser.setLastName(userDto.getLastName());
     existingUser.setEmail(userDto.getEmail());
 //    return UserMapper.mapToUserDto(existingUser);
-    return modelMapper.map(existingUser, UserDto.class);
+//    return modelMapper.map(existingUser, UserDto.class);
+    return AutoUserMapper.MAPPER.mapToUserDto(existingUser);
   }
 
   @Override
