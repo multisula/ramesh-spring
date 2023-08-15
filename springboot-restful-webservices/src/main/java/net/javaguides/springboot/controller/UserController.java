@@ -1,6 +1,7 @@
 package net.javaguides.springboot.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.javaguides.springboot.dto.UserDto;
 import net.javaguides.springboot.entity.User;
 import net.javaguides.springboot.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -15,27 +16,27 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping
-  public ResponseEntity<User> createUser(@RequestBody User user) {
-    User savedUser = userService.createUser(user);
+  public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    UserDto savedUser = userService.createUser(userDto);
     return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
-    User user = userService.getUserById(userId);
-    return new ResponseEntity<>(user, HttpStatus.OK);
+  public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long userId) {
+    UserDto userDto = userService.getUserById(userId);
+    return new ResponseEntity<>(userDto, HttpStatus.OK);
   }
 
   @GetMapping
-  public ResponseEntity<User> getAllUsers() {
+  public ResponseEntity<UserDto> getAllUsers() {
     return new ResponseEntity(userService.getAllUsers(), HttpStatus.OK);
   }
 
   @PutMapping("{id}")
-  public ResponseEntity<User> updateUser(@PathVariable("id") Long userId,
-                                         @RequestBody User user) {
-    user.setId(userId);
-    User updatedUser = userService.updateUser(user);
+  public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long userId,
+                                         @RequestBody UserDto userDto) {
+    userDto.setId(userId);
+    UserDto updatedUser = userService.updateUser(userDto);
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
